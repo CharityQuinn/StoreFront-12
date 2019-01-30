@@ -1,0 +1,26 @@
+{
+  "name": "storefront-12",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamazonCustomer.js",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "i": "^0.3.6",
+    "inquirer": "^6.2.1",
+    "my-sql": "^1.2.15"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharityQuinn/StoreFront-12.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CharityQuinn/StoreFront-12/issues"
+  },
+  "homepage": "https://github.com/CharityQuinn/StoreFront-12#readme"
+}

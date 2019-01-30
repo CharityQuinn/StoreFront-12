@@ -10,7 +10,7 @@ CREATE TABLE products(
   stock_quantity INTEGER(20);
 );
 
--- Create values into the table of the database headings
+-- Create values int7o the table of the database headings
 INSERT INTO products (product_name, department_name, price, stock_quantity) 
 VALUES ('Aunt Mabel Mops', "Cleaning Supplies", 5.00, 50),
 ('Dr. Martens shoes', "Footware",100, 20),
@@ -18,7 +18,7 @@ VALUES ('Aunt Mabel Mops', "Cleaning Supplies", 5.00, 50),
 ('Bezos Umbrellas', 'Outerware', 15, 50),
 ('Dr. Martens Socks', 'Footware', 11, 100),
 ('Lifefactory Water Bottles', 'Housewares', 13, 39),
-('Lifefactory', 'Lunch Boxes', 'Housewares', 12, 70),
+('Lifefactory Lunch Boxes', 'Housewares', 12, 70),
 ('TSL Televisions', 'AudioVisual', 300, 15),
 ('Lifefactory Laundry Basket', 'Housewares', 8, 100),
 ('Unicare Vitamins', 'Groceries', 15, 200);
