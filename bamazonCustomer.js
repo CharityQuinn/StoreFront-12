@@ -21,19 +21,15 @@ connection.connect(function (err) {
 });
 
 var prodArr = [];
-const queryString = connection.query("SELECT products.product_name FROM products", function (err, res) {
+const queryString = connection.query("SELECT * FROM products", function (err, res) {
   prodArr = res;
-  console.log("This is the prodArr " + prodArr);
-  // if (err) throw err;
-  // console.log(res);
-  //  for (i = 0; i < queryString.length; i++) {
-  //   prodArr = queryString.product_name[i];
-  //    prodArr = push(prodArr[i]);
-  //   console.log(prodArr);
-  // }
+  //console.log(prodArr);
+
+
   connection.end();
 });
 
+const userProdName = "";
 
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
@@ -43,27 +39,27 @@ function askUser() {
       name: "action",
       type: "list",
       message: "What would you like to buy from our Store?",
-      choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'
-    ]
+      choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'],
+      userProdName = (this)
     }, {
       name: "howMany",
       type: "input",
       message: "How many of the units would you like to buy?",
       validate: function (input) {
-        return !isNAN(input);
+        return !isNaN(input);
       },
       filter: function (input) {
-        return parseInt(input);
+        quantity(input);
+        const userQuantity = parseInt(input);
+        return userQuantity;
       }
-    }
-    
-  ]).then(({action, howMany}) => {
-      switch (answer.action) {
-        case "Products":
+    }]).then((userProdName,userQuantity) => {
+      switch ({userProdName}) {
+        case "product_name":
           products();
           break;
 
-        case "Departments":
+        case "department_name":
           departments();
           break;
 
@@ -71,7 +67,7 @@ function askUser() {
           price();
           break;
 
-        case "quantity":
+        case "stock_quantity":
           quantity();
           break;
       }
@@ -80,19 +76,30 @@ function askUser() {
 }
 
 
-function products() {
-  const queryString = database.query("SELECT products.product_name FROM products WHERE products.product_name.contains({action})")
+  function products() {
+    const queryString = database.query("SELECT products.product_name FROM products WHERE products.product_name.contains(userProdName)")
+    console.log("Made it into products fxn, this is queryString " + queryString);
+  }
 
-}
+  function departments() {
 
-function departments() {
+  }
 
-}
+  function price() {
+    var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
+    console.log(goodSale);
+  }
 
-function price() {
+  function quantity(prodArr) {
 
-}
+    for (var i = 0; i < prodArr.length; i++) {
+      if (prodArr[i].stock_quantity > ({
+          userProdName
+        })) {
+        // If a matching product is found, return the product
+        price(prodArr.price);
+        return prodArr[i];
 
-function quantity() {
-
-}
+      }
+    }
+ } 
