@@ -20,21 +20,30 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId);
-
+  console.log("connected as id " + connection.threadId + "\n");
+  startFunction();
 });
 
+
+// Establish an array to hold the incoming results from the db
 var prodArr = [];
-const queryString = connection.query("SELECT * FROM products", function (err, res) {
-  prodArr = res;
-  console.log(prodArr);
 
-  askUser();
-  connection.end();
-});
+function startFunction() {
+  const queryString = connection.query("SELECT * FROM products", function (err, res) {
+    if (err) throw (err);
+    prodArr = res;
+    console.log("Available products\n");
+    for (var x in res){
+      console.log([
+        res[x].item_id, res[x].product_name, res[x].price]);
+    };
+    askUser(prodArr);
+    connection.end();
+  });
+};
 
 
-
+  
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
 function askUser(prodArr) {
@@ -58,7 +67,6 @@ for(var x in prodArr) {
           return !isNaN(input);
         },
         filter: function (input) {
-          quantity(input);
           const userQuantity = parseInt(input);
           console.log(userQuantity);
           return userQuantity;
@@ -109,11 +117,6 @@ function products() {
 
 
 
-
-function departments() {
-
-}
-
 function price() {
   var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
 
@@ -121,16 +124,15 @@ function price() {
 
 };
 
-function quantity(prodArr) {
+function quantity(userQuantity, prodArr) {
 
   for (var i = 0; i < prodArr.length; i++) {
-    if (prodArr[i].stock_quantity > ({
-        userProdName
-      })) {
-      // If a matching product is found, return the product
-      price(prodArr.price);
+    if (prodArr[i].stock_quantity <= userQuantity) {
+      // If a matching product is found, deplete stock and send to price
+      price(prodArr.item_id, prodArr.price);
 
       prodArr.stock_quantity = parseInt(prodArr.stock_quantity) - parseInt(userQuantity);
+      price(userQuantity, prodArr.price)
       connection.query(
         "UPDATE products SET ? WHERE ?",
         [{
@@ -138,22 +140,19 @@ function quantity(prodArr) {
           },
           {
             stock_quantity: userQuantity
-          }
+          },
+          console.log("New Quantity placed successfully!")
 
         ],
         function (error) {
           if (error) throw err;
-          console.log("New Quantity placed successfully!");
+         console.log("Insufficient quantity!");
 
         }
 
       );
     }
   }
-
-
-
-
 
 
 }
