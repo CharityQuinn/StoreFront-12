@@ -3,6 +3,9 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var cTable = require('console.table');
 
+// variable storing password from .env
+const localDBPW = process.env.MYSQL_PW
+
 var connection = mysql.createConnection({
   host: "localhost",
   // Establish port 3306
@@ -10,20 +13,21 @@ var connection = mysql.createConnection({
   // Username
   user: "root",
   // Password
-  password: "password",
+  password: "localDBPW",
   database: "bamazon"
 });
 
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
- 
+
 });
 
 var prodArr = [];
 const queryString = connection.query("SELECT * FROM products", function (err, res) {
   prodArr = res;
-  console.log((prodArr));
+  // var organized = cTable(prodArr);
+  console.log(prodArr);
 
   askUser();
   connection.end();
@@ -40,7 +44,6 @@ function askUser() {
         type: "list",
         message: "What would you like to buy from our Store?",
         choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'],
-           
       },
       {
         name: "howMany",
@@ -57,9 +60,9 @@ function askUser() {
         }
       }
     ])
-    .then(function(answer) {
+    .then(function (answer) {
       switch (answer.action) {
-          case "product_name":
+        case "product_name":
           const userProdName = answer.action;
           products();
           break;
@@ -75,8 +78,8 @@ function askUser() {
         case "stock_quantity":
           quantity();
           break;
-         
-          
+
+
       }
     })
 
@@ -86,9 +89,21 @@ function askUser() {
 
 function products() {
 
-  const queryString = database.query("SELECT products.product_name FROM products WHERE products.product_name.contains(userProdName)")
-  console.log("Made it into products fxn, this is queryString " + queryString);
-}
+  const queryString = ("SELECT * FROM products", function (err, result) {
+    if (err) throw (err);
+    console.log("Made it into products fxn, this is queryString " + queryString);
+    for (var x in result) {
+      console.log([
+        result[x].item_id, result[x].product_name, result[x].price
+      ]);
+    };
+
+    connection.end();
+  });
+};
+
+
+
 
 function departments() {
 
@@ -96,7 +111,7 @@ function departments() {
 
 function price() {
   var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
-  
+
   console.log("Thank you for your purchase.  You owe us " + goodSale)
 
 };
