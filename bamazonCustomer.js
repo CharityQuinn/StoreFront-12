@@ -1,7 +1,7 @@
 // Require sql, inquirer, console.table
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var cTable = require("console.table");
+var cTable = require('console.table');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -23,7 +23,7 @@ connection.connect(function (err) {
 var prodArr = [];
 const queryString = connection.query("SELECT * FROM products", function (err, res) {
   prodArr = res;
-  console.log(cTable(prodArr));
+  console.log((prodArr));
 
   askUser();
   connection.end();
@@ -52,14 +52,15 @@ function askUser() {
         filter: function (input) {
           quantity(input);
           const userQuantity = parseInt(input);
+          console.log(userQuantity);
           return userQuantity;
         }
       }
     ])
     .then(function(answer) {
       switch (answer.action) {
-     
-        case "product_name":
+          case "product_name":
+          const userProdName = answer.action;
           products();
           break;
 
@@ -74,12 +75,14 @@ function askUser() {
         case "stock_quantity":
           quantity();
           break;
+         
+          
       }
     })
 
 }
-const userProdName = answer.action;
-console.log("The user picked " + userProdName);
+//const userProdName = answer.action;
+//console.log("The user picked " + userProdName);
 
 function products() {
 
