@@ -17,44 +17,48 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  askUser();
+ 
 });
 
 var prodArr = [];
 const queryString = connection.query("SELECT * FROM products", function (err, res) {
   prodArr = res;
-  //console.log(prodArr);
+  console.log(cTable(prodArr));
 
-
+  askUser();
   connection.end();
 });
 
-const userProdName = "";
+
 
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
 function askUser() {
   inquirer
     .prompt([{
-      name: "action",
-      type: "list",
-      message: "What would you like to buy from our Store?",
-      choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'],
-      userProdName = (this)
-    }, {
-      name: "howMany",
-      type: "input",
-      message: "How many of the units would you like to buy?",
-      validate: function (input) {
-        return !isNaN(input);
+        name: "action",
+        type: "list",
+        message: "What would you like to buy from our Store?",
+        choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'],
+           
       },
-      filter: function (input) {
-        quantity(input);
-        const userQuantity = parseInt(input);
-        return userQuantity;
+      {
+        name: "howMany",
+        type: "input",
+        message: "How many of the units would you like to buy?",
+        validate: function (input) {
+          return !isNaN(input);
+        },
+        filter: function (input) {
+          quantity(input);
+          const userQuantity = parseInt(input);
+          return userQuantity;
+        }
       }
-    }]).then((userProdName,userQuantity) => {
-      switch ({userProdName}) {
+    ])
+    .then(function(answer) {
+      switch (answer.action) {
+     
         case "product_name":
           products();
           break;
@@ -74,32 +78,59 @@ function askUser() {
     })
 
 }
+const userProdName = answer.action;
+console.log("The user picked " + userProdName);
 
+function products() {
 
-  function products() {
-    const queryString = database.query("SELECT products.product_name FROM products WHERE products.product_name.contains(userProdName)")
-    console.log("Made it into products fxn, this is queryString " + queryString);
-  }
+  const queryString = database.query("SELECT products.product_name FROM products WHERE products.product_name.contains(userProdName)")
+  console.log("Made it into products fxn, this is queryString " + queryString);
+}
 
-  function departments() {
+function departments() {
 
-  }
+}
 
-  function price() {
-    var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
-    console.log(goodSale);
-  }
+function price() {
+  var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
+  
+  console.log("Thank you for your purchase.  You owe us " + goodSale)
 
-  function quantity(prodArr) {
+};
 
-    for (var i = 0; i < prodArr.length; i++) {
-      if (prodArr[i].stock_quantity > ({
-          userProdName
-        })) {
-        // If a matching product is found, return the product
-        price(prodArr.price);
-        return prodArr[i];
+function quantity(prodArr) {
 
-      }
+  for (var i = 0; i < prodArr.length; i++) {
+    if (prodArr[i].stock_quantity > ({
+        userProdName
+      })) {
+      // If a matching product is found, return the product
+      price(prodArr.price);
+
+      prodArr.stock_quantity = parseInt(prodArr.stock_quantity) - parseInt(userQuantity);
+      connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [{
+            product_name: userProdName
+          },
+          {
+            stock_quantity: userQuantity
+          }
+
+        ],
+        function (error) {
+          if (error) throw err;
+          console.log("New Quantity placed successfully!");
+
+        }
+
+      );
     }
- } 
+  }
+
+
+
+
+
+
+}
