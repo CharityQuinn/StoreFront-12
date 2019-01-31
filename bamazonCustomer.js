@@ -2,9 +2,10 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var cTable = require('console.table');
+require("dotenv").config();
 
 // variable storing password from .env
-const localDBPW = process.env.MYSQL_PW
+const localDBPW = process.env.MYSQL_PW;
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -26,7 +27,6 @@ connection.connect(function (err) {
 var prodArr = [];
 const queryString = connection.query("SELECT * FROM products", function (err, res) {
   prodArr = res;
-  // var organized = cTable(prodArr);
   console.log(prodArr);
 
   askUser();
@@ -37,13 +37,18 @@ const queryString = connection.query("SELECT * FROM products", function (err, re
 
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
-function askUser() {
+function askUser(prodArr) {
+for(var x in prodArr) {
+  console.log([
+    prodArr[x].item_id, result[x].product_name, result[x].price]);
+};
+
   inquirer
     .prompt([{
         name: "action",
         type: "list",
         message: "What would you like to buy from our Store?",
-        choices: ['Dr. Martens shoes', 'Wannamaker hats', 'Bezos Umbrellas', 'Dr. Martens Socks', 'Lifefactory Water Bottles', 'Lifefactory Lunch Boxes', 'TSL Televisions', 'Lifefactory Laundry Basket', 'Unicare Vitamins'],
+        choices: [],
       },
       {
         name: "howMany",
