@@ -5,7 +5,7 @@ var cTable = require('console.table');
 require("dotenv").config();
 
 // variable storing password from .env
-const localDBPW = process.env.MYSQL_PW;
+const MYSQL_PW = process.env.MYSQL_PW;
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -14,7 +14,7 @@ var connection = mysql.createConnection({
   // Username
   user: "root",
   // Password
-  password: "localDBPW",
+  password: "password",
   database: "bamazon"
 });
 
@@ -49,15 +49,15 @@ function startFunction() {
 function askUser(prodArr) {
 for(var x in prodArr) {
   console.log([
-    prodArr[x].item_id, result[x].product_name, result[x].price]);
+    prodArr[x].item_id, prodArr[x].product_name, prodArr[x].price]);
 };
 
   inquirer
     .prompt([{
         name: "action",
         type: "list",
-        message: "What would you like to buy from our Store?",
-        choices: [],
+        message: "What would you like to buy from our Store? Please enter a number on the left",
+        
       },
       {
         name: "howMany",
@@ -76,7 +76,7 @@ for(var x in prodArr) {
     .then(function (answer) {
       switch (answer.action) {
         case "product_name":
-          const userProdName = answer.action;
+          const userId = answer.action;
           products();
           break;
 
@@ -97,8 +97,8 @@ for(var x in prodArr) {
     })
 
 }
-//const userProdName = answer.action;
-//console.log("The user picked " + userProdName);
+//const userId = answer.action;
+//console.log("The user picked " + userId);
 
 function products() {
 
@@ -136,7 +136,7 @@ function quantity(userQuantity, prodArr) {
       connection.query(
         "UPDATE products SET ? WHERE ?",
         [{
-            product_name: userProdName
+            item_id: userId
           },
           {
             stock_quantity: userQuantity
