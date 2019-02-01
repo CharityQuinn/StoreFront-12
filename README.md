@@ -10,3 +10,4 @@ I will maintain this project but it is only here with the *tremendous help from 
 You can access this project by looking at the following screen shots:
 [Link to bamazonCustomer](./ScreenShots/Products.docx)
 [Link to Customer Choice](./ScreenShots/ListToPick.docx)
+[Link to Customer New Choice](./ScreenShots/NewLisError.docx)
