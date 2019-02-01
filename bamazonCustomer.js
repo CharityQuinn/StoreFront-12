@@ -33,9 +33,10 @@ function startFunction() {
     if (err) throw (err);
     prodArr = res;
     console.log("Available products\n");
-    for (var x in res){
+    for (var x = 0; x < res.length; x++) {
       console.log([
-        res[x].item_id, res[x].product_name, res[x].price]);
+        res[x].item_id, res[x].product_name, res[x].price
+      ]);
     };
     askUser(prodArr);
     connection.end();
@@ -43,33 +44,34 @@ function startFunction() {
 };
 
 
-  
+
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
 function askUser(prodArr) {
-for(var x in prodArr) {
-  console.log([
-    prodArr[x].item_id, prodArr[x].product_name, prodArr[x].price]);
-};
-
-  inquirer
+    inquirer
     .prompt([{
-        name: "action",
-        type: "list",
-        message: "What would you like to buy from our Store? Please enter a number on the left",
-        
+      name: "choice",
+      type: "rawlist",
+      choices: function () {
+        var choiceArray = [];
+        for (var i = 0; i < prodArr.length; i++) {
+          choiceArray.push(prodArr[i].item_id);
+        }
+        return choiceArray;
       },
-      {
-        name: "howMany",
-        type: "input",
-        message: "How many of the units would you like to buy?",
-        validate: function (input) {
-          return !isNaN(input);
-        },
-        filter: function (input) {
-          const userQuantity = parseInt(input);
-          console.log(userQuantity);
-          return userQuantity;
+      message: "What would you like to buy?"
+    },
+     {
+       name: "howMany",
+       type: "input",
+       message: "How many of the units would you like to buy?",
+       validate: function (input) {
+         return !isNaN(input);
+       },
+       filter: function (input) {
+        const userQuantity = parseInt(input);
+        console.log(userQuantity);
+        return userQuantity;
         }
       }
     ])
@@ -101,18 +103,12 @@ for(var x in prodArr) {
 //console.log("The user picked " + userId);
 
 function products() {
-
-  const queryString = ("SELECT * FROM products", function (err, result) {
-    if (err) throw (err);
-    console.log("Made it into products fxn, this is queryString " + queryString);
-    for (var x in result) {
+    for (var x = 0; x < prodArr.length; x++) {
       console.log([
-        result[x].item_id, result[x].product_name, result[x].price
+        prodArr[x].item_id, prodArr[x].product_name, prodArr[x].price
       ]);
     };
-
-    connection.end();
-  });
+  
 };
 
 
@@ -146,7 +142,7 @@ function quantity(userQuantity, prodArr) {
         ],
         function (error) {
           if (error) throw err;
-         console.log("Insufficient quantity!");
+          console.log("Insufficient quantity!");
 
         }
 
