@@ -5,9 +5,9 @@ This project allows a user to first see products in our mock store.  The user wi
 This project will be useful if you want to start a store or check your math abilities.  
 
 If you have any questions, please **Slack** me a message.
-I will maintain this project but it is only here with the *tremendous help from my TAs and tutor.
+I will maintain this project but it is only here with the *tremendous help from my TAs and tutor. 
 
 You can access this project by looking at the following screen shots:
 [Link to bamazonCustomer](./ScreenShots/Products.docx)
 [Link to Customer Choice](./ScreenShots/ListToPick.docx)
-[Link to Customer New Choice](./ScreenShots/NewLisError.docx)
+[Link to Customer Most Recent](./ScreenShots/OnlySoFar.docx)
