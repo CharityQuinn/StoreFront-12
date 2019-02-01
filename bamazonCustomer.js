@@ -22,7 +22,7 @@ connection.connect(function (err) {
 
 
 // Establish an array to hold the incoming results from the db
-var prodArr = [];
+let prodArr = [];
 const queryString = connection.query("SELECT * FROM products", function (err, res) {
   if (err) throw (err);
   prodArr = res;
@@ -33,7 +33,8 @@ const queryString = connection.query("SELECT * FROM products", function (err, re
     ]);
 
   }
-  startFunction();
+
+  startFunction(prodArr);
 });
 
 function startFunction() {
@@ -46,10 +47,10 @@ function startFunction() {
     })
     .then(function (answer) {
       // based on their answer, either call the bid or the post functions
-      if (answer.postOrBid === "Yes") {
+      if (answer.questionOne === "Yes") {
         console.log("User picked Yes, moving to askUser");
-        askUser();
-      } else if (answer.postOrBid === "NO\n") {
+        askUser(prodArr);
+      } else if (answer.questionOne === "No") {
         console.log("Okay Bye")
         connection.end();
       }
@@ -57,47 +58,39 @@ function startFunction() {
 }
 
 
-
-
-
-
 // The first should ask them the ID of the product they would like to buy.
 //* The second message should ask how many units of the product they would like to buy.
-function askUser(
-  
-) {
+function askUser() {
   inquirer
     .prompt([{
-        name: "choice",
+        name: "input1",
         type: "rawlist",
-        choices: function () {
-          var choiceArray = [];
-          for (var i = 0; i < prodArr.length; i++) {
-            choiceArray.push(prodArr[i].item_id);
-          }
-          return choiceArray;
-        },
-        message: "What would you like to buy?"
+        message: "Please enter the number at the left of the product you would like."
       },
       {
         name: "howMany",
-        type: "input",
+        type: "input2",
         message: "How many of the units would you like to buy?",
-        validate: function (input) {
-          return !isNaN(input);
+        validate: function (input2) {
+          if (input2 < 11 || input2 > 20) {
+            console.log("Please enter a number between 11 and 20!");
+           startFunction();
+          }
+          return !isNaN(input2);
         },
-        filter: function (input) {
-          const userQuantity = parseInt(input);
+       
+        filter: function (input2) {
+          const userQuantity = parseInt(input2);
           console.log(userQuantity);
           return userQuantity;
         }
       }
     ])
-    .then(function (choiceArray, userQuantity) {
+    .then(function (input1, userQuantity) {
       // get the information of the chosen item
       var chosenItem;
       for (var i = 0; i < prodArr.length; i++) {
-        if (prodArr[i].item_id === answer.choice) {
+        if (prodArr[i].item_id === input1) {
           chosenItem = prodArr[i];
           quantity(chosenItem, userQuantity);
         }
@@ -126,25 +119,24 @@ function price() {
   var goodSale = parseInt(prodArr.price) * parseInt(userQuantity);
 
   console.log("Thank you for your purchase.  You owe us " + goodSale)
-
+  startFunction();
 };
 
-function quantity(userQuantity, chosenItem) {
+function quantity(userQuantity,chosenItem) {
 
   for (var i = 0; i < prodArr.length; i++) {
     if (prodArr[i].item_id === chosenItem) {
       if (prodArr.stock_quantity <= userQuantity) {
         // If a matching product is found, deplete stock and send to price
-        price(prodArr.item_id, prodArr.price);
         prodArr.stock_quantity = parseInt(prodArr.stock_quantity) - parseInt(userQuantity);
         price(userQuantity, prodArr.price)
         connection.query(
           "UPDATE products SET ? WHERE ?",
           [{
-              item_id: userId
+              item_id: chosenItem
             },
             {
-              stock_quantity: userQuantity
+              stock_quantity: stock_quantity
             },
             console.log("New Quantity placed successfully!")
           ])
