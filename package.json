@@ -6,7 +6,7 @@
   "dependencies": {
     "console.table": "^0.10.0",
     "dotenv": "^6.2.0",
-    "i": "^0.3.6",
+    "i": "^0.3.7",
     "inquirer": "^6.2.2",
     "my-sql": "^1.2.15"
   },
